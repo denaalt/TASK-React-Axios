@@ -1,18 +1,33 @@
 import React, { useState, useSyncExternalStore } from "react";
-import petsData from "../petsData";
+
 import PetItem from "./PetItem";
 import Modal from "./Modal";
+import { getAllPets } from "../API /pets";
+import { getOnePetId } from "../API /pets";
+import { useQuery } from "@tanstack/react-query";
 
 const PetList = () => {
   const [query, setQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
+  // const [pets, setPerts] = useState([]);
+  // const getPets = async () => {
+  // const res = await getAllPets();
+  //   setPerts(res);
+  // };
 
-  const petList = petsData
-    .filter((pet) => pet.name.toLowerCase().includes(query.toLowerCase()))
-    .map((pet) => <PetItem pet={pet} key={pet.id} />);
+  const { data: pets } = useQuery({
+    queryKey: ["allPets"],
+    queryFn: getAllPets,
+  });
+
+  const petList = pets
+    ?.filter((pet) => pet.name.toLowerCase().includes(query.toLowerCase()))
+    ?.map((pet) => <PetItem pet={pet} key={pet.id} />);
+
   return (
     <>
       <div className="bg-[#F9E3BE] flex flex-col justify-center items-center ">
+        {/* <buttom onClick={getPets}>Get all pets</buttom> */}
         <div className="w-[76vw] flex h-[30px] mb-[30px] mt-[30px]">
           <input
             onChange={(e) => {
